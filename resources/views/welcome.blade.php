@@ -61,30 +61,7 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function() {
-            $("#submit-btn").on('click', function() {
-                var selectedIds = [];
-
-                $("input[type='checkbox']:checked").each(function() {
-                    var checkboxId = $(this).attr('id');
-                    
-                    if (checkboxId) {
-                        selectedIds.push(checkboxId);
-                    }
-                });
-                console.log("Selected IDs:", selectedIds);
-            });
-            $("#checkbox-all-section").on('change', function() {
-                if (this.checked) {
-                    $("input[type='checkbox']").prop('checked', true);
-                } else {
-                    $("input[type='checkbox']").prop('checked', false);
-                }
-            });
-
-        });
-    </script>
+   
 
 </body>
 
