@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\RateLimiter;
+
 
 class EmployeeController extends Controller
 {
@@ -102,9 +101,6 @@ class EmployeeController extends Controller
             ]);
         }
     }
-
-
-
     public function login_store(Request $request)
     {
         $credentials =  $request->validate([
@@ -120,4 +116,6 @@ class EmployeeController extends Controller
             return back()->withErrors(['email' => 'Invalid credentials provided.']);
         }
     }
+
+
 }

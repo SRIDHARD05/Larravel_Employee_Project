@@ -30,7 +30,7 @@
                     @error('email')
                     <p class="text-danger text-start text-sm">{{ $message }}</p>
                     @enderror
-
+                    
 
                     <div class="input-group input-group-outline mt-3">
                         <input type="password" name="password" class="form-control" placeholder="Enter Password here.." required>
