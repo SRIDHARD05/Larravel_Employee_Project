@@ -32,14 +32,14 @@
                     <form role="form" class="text-start" method="post" action="{{ route('login') }}">
                         @csrf
                         <div class="input-group input-group-outline my-3">
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="Enter Email here..." required>
 
                             @error('email')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="input-group input-group-outline mb-3">
-                            <input type="text" name="password" class="form-control">
+                            <input type="password" name="password" class="form-control" placeholder="Enter Password here..." required>
 
                             @error('password')
                             <div class="text-danger">{{ $message }}</div>

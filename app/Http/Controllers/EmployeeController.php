@@ -56,8 +56,7 @@ class EmployeeController extends Controller
     }
     public function welcome(Request $request)
     {
-        dd(Role::all());
-        // return view('test');
+        return view('test');
     }
 
     public function logout(Request $request)
@@ -77,24 +76,31 @@ class EmployeeController extends Controller
 
     public function register_store(Request $request)
     {
-        $cred = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:5|confirmed',
-        ]);
+        $agree = $request->has('agree');
+        if ($agree) {
+            $cred = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:5|confirmed',
+            ]);
 
-        $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-        ]);
+            $user = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+            ]);
 
-        $cred['password'] = bcrypt($cred['password']);
+            $cred['password'] = bcrypt($cred['password']);
 
-        Auth::login($user);
-        $request->session()->regenerate();
+            Auth::login($user);
+            $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+            return redirect()->route('dashboard');
+        } else {
+            return back()->withErrors([
+                'agree' => 'You must agree to the terms and conditions to proceed.',
+            ]);
+        }
     }
 
 

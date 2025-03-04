@@ -16,43 +16,51 @@
             <div class="card-body">
                 <form role="form" method="post" action="/register">
                     @csrf
-                    <div class="input-group input-group-outline mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control">
+                    <div class="input-group input-group-outline mt-3">
+                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Enter Name here" required>
                     </div>
                     @error('name')
-                    {{ $message }}
-                    @enderror
-                    <div class="input-group input-group-outline mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control">
-                    </div>
-                    @error('email')
-                    {{ $message }}
-                    @enderror
-                    <div class="input-group input-group-outline mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control">
-                    </div>
-                    @error('password')
-                    {{ $message }}
+                    <p class="text-danger text-start text-sm">{{ $message }}</p>
                     @enderror
 
-                    <div class="input-group input-group-outline mb-3">
-                        <label class="form-label">Confirmation Password</label>
-                        <input type="password" name="password_confirmation" class="form-control">
+
+                    <div class="input-group input-group-outline mt-3">
+                        <input type="email" name="email" class="form-control" placeholder="Enter Email here..." value="{{ old('email') }}" required>
+                    </div>
+                    @error('email')
+                    <p class="text-danger text-start text-sm">{{ $message }}</p>
+                    @enderror
+
+
+                    <div class="input-group input-group-outline mt-3">
+                        <input type="password" name="password" class="form-control" placeholder="Enter Password here.." required>
+                    </div>
+                    @error('password')
+                    <p class="text-danger text-start text-sm">{{ $message }}</p>
+                    @enderror
+
+
+
+                    <div class="input-group input-group-outline mt-3">
+                        <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm your password here..." required>
                     </div>
                     @error('password_confirmation')
-                    {{ $message }}
+                    <p class="text-danger text-start text-sm">{{ $message }}</p>
                     @enderror
-                    <div class="form-check form-check-info text-start ps-0">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked="">
+
+
+                    <div class="form-check form-check-info text-start ps-0 mt-3">
+                        <input class="form-check-input" type="checkbox" name="agree">
                         <label class="form-check-label" for="flexCheckDefault">
                             I agree the <a href="javascript:;" class="text-dark font-weight-bolder">Terms and Conditions</a>
                         </label>
+
+                        @error('agree')
+                        <p class="text-danger text-start text-sm">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-lg bg-gradient-dark btn-lg w-100 mt-4 mb-0">Sign Up</button>
+                        <button type="submit" class="btn btn-lg bg-gradient-dark btn-lg w-100 mt-2 mb-0">Sign Up</button>
                     </div>
                 </form>
             </div>
