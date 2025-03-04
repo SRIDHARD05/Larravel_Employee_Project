@@ -8,11 +8,11 @@ use Illuminate\Http\Request;
 class AdminMiddleware
 {
 
-    // public function handle(Request $request, Closure $next)
-    // {
-    //     if (auth()->user() && auth()->user()->role === "admin") {
-    //         return $next($request);
-    //     }
-    //     return redirect('/errors/403')->with('error', 'You do not have admin access');
-    // }
+    public function handle(Request $request, Closure $next)
+    {
+        if (auth()->user() && auth()->user()->role === "admin") {
+            return $next($request);
+        }
+        return redirect('/errors/403')->with('error', 'You do not have admin access');
+    }
 }

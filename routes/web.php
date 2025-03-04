@@ -19,14 +19,15 @@ Route::post('/register', [EmployeeController::class, 'register_store']);
 Route::post('/logout', [EmployeeController::class, 'logout'])->name('logout');
 
 
+Route::get('/users', [EmployeeController::class, 'users'])->name('users');
 
-// Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
 
-//     Route::get('/admin/dashboard', function () {
-//         return view('admin.dashboard');
-//     })->name('admin.dashboard');
-// });
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+});
 
-// Route::get('/errors/403', function () {
-//     return view('errors.403');
-// })->name('errors.403');
+Route::get('/errors/403', function () {
+    return view('errors.403');
+})->name('errors.403');
