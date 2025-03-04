@@ -1,125 +1,150 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Laravel</title>
-
-    <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-</head>
-
-<body>
-    <br><br>
-    <form action="{{ url('/search') }}" method="get">
-        <div class="container mx-auto px-4">
-            <div class="row">
-                <div class="col col-3">
-                    <label for="employee-search">First Name</label>
-                    <input type="text" name="first_name" placeholder="Search items..." value="{{ $search ?? '' }}">
-                </div>
-                <div class="col col-3">
-                    <label for="employee-search">Last Name</label>
-                    <input type="text" name="last_name" placeholder="Search items..." value="{{ $search ?? '' }}">
-                </div>
-                <div class="col col-3">
-                    <label for="employee-search">Email</label>
-                    <input type="text" name="email" placeholder="Search items..." value="{{ $search ?? '' }}">
-                </div>
-                <div class="col col-3">
-                    <label for="employee-search">position</label>
-                    <input type="text" name="position" placeholder="Search items..." value="{{ $search ?? '' }}">
-                </div>
-            </div>
-            <div class="row">
-                <button class="search-submit-btn bg-primary">Search</button>
+@section('content')
+<div class="container-fluid py-2">
+    <div class="row ms-3 me-3">
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ url('/search') }}" method="get">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="input-group input-group-outline">
+                                <input type="text" class="form-control" name="first_name" placeholder="Search First Name here..." onfocus="focused(this)" onfocusout="defocused(this)">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group input-group-outline">
+                                <input type="text" class="form-control" name="last_name" onfocus="focused(this)" onfocusout="defocused(this)" placeholder="Search Second Name here...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group input-group-outline">
+                                <input type="email" class="form-control" name="email" placeholder="Search Email here..." onfocus="focused(this)" onfocusout="defocused(this)">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group input-group-outline">
+                                <input type="text" class="form-control" name="position" placeholder="Search Position here..." onfocus="focused(this)" onfocusout="defocused(this)">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn bg-gradient-dark btn-sm float-end mt-2 mb-0" id="submit-search-btn">Search</button>
+                </form>
             </div>
         </div>
-    </form>
-    <br>
-    <hr>
-    <button id="submit-btn">Submit</button>
-    <hr>
-    <div class="container mx-auto px-4">
-        <div class="table-none md:table-fixed ...">
-            <table class="table-fixed">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox" id="checkbox-all-section">
-                        </th>
-                        <th>#</th>
-                        <th>First Name </th>
-                        <th>Last name</th>
-                        <th>email</th>
-                        <th> position</th>
-                        <th>salary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $employee)
-                    <tr id="{{ $employee->id }}">
-                        <th>
-                            <input type="checkbox" id="{{ $employee->id }}" name="checkbox" value="Bike">
-                        </th>
-                        <th>{{ $employee->id  }}</th>
-                        <td>{{ $employee->first_name }}</td>
-                        <td>{{ $employee->last_name }}</td>
-                        <td>{{ $employee->email }}</td>
-                        <td>{{ $employee->position }}</td>
-                        <td>{{ $employee->salary }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <br>
-
-            <div>
-                {{ $data->links() }}
+    </div>
+    <div class="row mt-4 ms-3 me-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col d-flex justify-content-start">
+                        <h4>Employees</h4>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn bg-gradient-success text-white btn-sm" id="employee-export-btn" style="display: none;">Export Employees</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            $("#checkbox-all-section").on('change', function() {
-                if (this.checked) {
-                    $("input[type='checkbox']").prop('checked', true);
-                } else {
-                    $("input[type='checkbox']").prop('checked', false);
-                }
-            });
+    <div class="row mt-4 ms-3 me-3">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="checkbox-all-section">
+                            </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">First Name </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Last Name
+                            </th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Position</th>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data as $employee)
+                        <tr id="{{  $employee->employer_id  }}">
+                            <th>
+                                <input type="checkbox" id="{{ $employee->employer_id }}" name="checkbox" value="Bike">
+                            </th>
+                            <td>{{ $employee->first_name }}</td>
+                            <td>{{ $employee->last_name }}</td>
+                            <td>{{ $employee->email }}</td>
+                            <td>{{ $employee->position }}</td>
+                            <td>{{ $employee->salary }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <br>
+                <div class="d-flex justify-content-end">
+                    {{ $data->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    function toggleVisibility() {
+        if ($('input[name="checkbox"]:checked').length > 0) {
+            $('#employee-export-btn').css('display', 'block');
+        } else {
+            $('#employee-export-btn').css('display', 'none');
+        }
+    }
+
+    $(document).ready(function() {
+        $("#checkbox-all-section").on('change', function() {
+            var isChecked = this.checked;
+            $("input[type='checkbox'][name='checkbox']").prop('checked', isChecked);
+            toggleVisibility();
         });
-        $(document).ready(function() {
-            $("#submit-btn").on('click', function() {
-                var selectedEmployees = [];
 
-                $("input[name='checkbox']:checked").each(function() {
-                    var row = $(this).closest("tr");
-                    var employeeData = {};
+        $(document).on('change', 'input[name="checkbox"]', function() {
+            toggleVisibility();
+        });
 
-                    var checkboxId = $(this).attr('id');
-                    if (checkboxId) {
-                        employeeData.id = checkboxId;
+        $("#employee-export-btn").on('click', function() {
+            var selectedEmployees = [];
+
+            $("input[name='checkbox']:checked").each(function() {
+                var row = $(this).closest("tr");
+                var employeeData = {};
+
+                var checkboxId = $(this).attr('id');
+                var data = @json($data);
+
+                for (var i = 0; i < data.data.length; i++) {
+                    if (data.data[i].employer_id == checkboxId) {
+
+                        employeeData = data.data[i];
+
+                        delete employeeData.employer_id;
+                        employeeData.id = selectedEmployees.length + 1;
+                        selectedEmployees.push(employeeData);
                     }
+                }
 
-                    employeeData.first_name = row.find("td").eq(0).text().trim();
-                    employeeData.last_name = row.find("td").eq(1).text().trim();
-                    employeeData.email = row.find("td").eq(2).text().trim();
-                    employeeData.position = row.find("td").eq(3).text().trim();
-                    employeeData.salary = row.find("td").eq(4).text().trim();
-
-                    selectedEmployees.push(employeeData);
-                });
-
-                console.log("Selected Employees Data:", selectedEmployees);
             });
-        });
-    </script>
-</body>
 
-</html>
+            var json = JSON.stringify(selectedEmployees, null, 2);
+            var blob = new Blob([json], {
+                type: "application/json"
+            });
+
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "selected_employees.json";
+            a.click();
+        });
+
+
+    });
+</script>
+
+@endsection
