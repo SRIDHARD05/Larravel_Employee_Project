@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class EmployeeController extends Controller
 {
@@ -120,8 +122,22 @@ class EmployeeController extends Controller
 
     public function users(RoleService $roleService)
     {
+        // $data = $roleService->viewUser(2);
+        // dd($data);
+        // dd(session()->all());
+        // dd(gettype((string) Str::uuid()));
+        // $username = Auth::user()->name;
+        // $email = Auth::user()->email;
+        // Log::info("User -> {$username} has been succesfully created");
+        // Log::info("Username -> {$username} and Email -> {$email}");
 
-        $data = $roleService->viewUser(2);
-        dd($data);
+        // dd(Log::warning('There is a critical bug inside the employee controller'));
+        // Log::channel('slack')->info('registeration successful');
+        $logFiles = glob(storage_path('logs/*.log')); 
+        foreach ($logFiles as $logFile) {
+            echo "Logs from: " . basename($logFile) . "\n";
+            echo nl2br(file_get_contents($logFile));  
+            echo "\n\n";
+        }
     }
 }

@@ -8,9 +8,8 @@
 </form>
 
 <h1>Welcome, {{ Auth::user()->name }} you are logged In..</h1>
-{{ Auth::user()->email }}
+{{ Auth::user()->name }}
 
-{{ Auth::user()->role }}
 @else
 
 <a href="{{ route('login') }}" class="btn btn-primary btn-sm text-dark">Login</a>
