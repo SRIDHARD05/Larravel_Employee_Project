@@ -31,3 +31,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::get('/errors/403', function () {
     return view('errors.403');
 })->name('errors.403');
+
+
+Route::get('/cache', [EmployeeController::class, 'cache'])->name('cache');
+
+Route::get('/notification', [EmployeeController::class, 'showNotifications'])->name('showNotifications');
+
+Route::get('/read/{id}', [EmployeeController::class, 'read'])->name('read');
+
+Route::get('/process', [EmployeeController::class, 'process'])->name('process');

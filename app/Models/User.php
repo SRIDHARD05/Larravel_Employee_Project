@@ -13,6 +13,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    // protected $keyType = 'string';  // Ensure it's 'string' since UUID is a string
+    // public $incrementing = false;
+
     protected $guarded = [];
 
     protected $hidden = [

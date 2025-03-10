@@ -4,15 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\User;
+use App\Notifications\ProfileUpdated;
 use App\Services\RoleService;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Mail\Mailables\Content;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use Symfony\Component\Process\Process;
+
 
 class EmployeeController extends Controller
 {
@@ -133,11 +143,61 @@ class EmployeeController extends Controller
 
         // dd(Log::warning('There is a critical bug inside the employee controller'));
         // Log::channel('slack')->info('registeration successful');
-        $logFiles = glob(storage_path('logs/*.log')); 
+        $logFiles = glob(storage_path('logs/*.log'));
         foreach ($logFiles as $logFile) {
             echo "Logs from: " . basename($logFile) . "\n";
-            echo nl2br(file_get_contents($logFile));  
+            echo nl2br(file_get_contents($logFile));
             echo "\n\n";
+        }
+    }
+
+    public function cache(Request $request)
+    {
+        $user = auth()->user();
+        $action = 'Profile Updated';
+        $user->notify(new ProfileUpdated($user, $action));
+
+        return view('cache');
+    }
+
+
+    public function showNotifications()
+    {
+        $user = auth()->user();
+        $notifications = $user->notifications;
+
+        $unreadNotifications = $user->unreadNotifications;
+
+        return view('profile.notifications', [
+            'notifications' => $notifications,
+            'unread' => $unreadNotifications
+        ]);
+    }
+
+    public function read($id, Response $response)
+    {
+        // auth()->user()->notifications->where('id', $id)->markAsRead();
+        auth()->user()->unreadNotifications->markAsRead();
+
+        dd($id);
+
+
+        // $locale = App::currentLocale();
+
+        // if (App::isLocale('en')) {
+        //     dd("Hello world");
+        // }
+    }
+
+    public function process()
+    {
+        $process = new Process(['dir']);
+        $process->run();
+
+        if ($process->isSuccessful()) {
+            dd($process->getOutput());
+        } else {
+            dd('Error: ' . $process->getErrorOutput());
         }
     }
 }
