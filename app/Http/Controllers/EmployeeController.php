@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPodcast;
 use App\Models\Employee;
 use App\Models\User;
 use App\Notifications\ProfileUpdated;
+use App\Notifications\User_notification;
 use App\Services\RoleService;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -12,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -57,7 +60,7 @@ class EmployeeController extends Controller
             $employees = $employees->where('position', 'like', '%' . $position . '%');
         }
 
-        $data = $employees->paginate(10);
+        $data = $employees->paginate(10000);
 
         return view('search', compact('data'));
     }
@@ -124,7 +127,7 @@ class EmployeeController extends Controller
 
         if (Auth::attempt($credentials, $request->input('remember'))) {
             $request->session()->regenerate();
-            return redirect()->route('dashboard');
+            return redirect()->intended(route('dashboard'));
         } else {
             return back()->withErrors(['email' => 'Invalid credentials provided.']);
         }
@@ -143,12 +146,15 @@ class EmployeeController extends Controller
 
         // dd(Log::warning('There is a critical bug inside the employee controller'));
         // Log::channel('slack')->info('registeration successful');
-        $logFiles = glob(storage_path('logs/*.log'));
-        foreach ($logFiles as $logFile) {
-            echo "Logs from: " . basename($logFile) . "\n";
-            echo nl2br(file_get_contents($logFile));
-            echo "\n\n";
-        }
+        // $logFiles = glob(storage_path('logs/*.log'));
+        // foreach ($logFiles as $logFile) {
+        //     echo "Logs from: " . basename($logFile) . "\n";
+        //     echo nl2br(file_get_contents($logFile));
+        //     echo "\n\n";
+        // }
+        $users = Employee::all();
+        dd(count($users));
+        // return view('users', compact('users'));
     }
 
     public function cache(Request $request)
@@ -163,30 +169,28 @@ class EmployeeController extends Controller
 
     public function showNotifications()
     {
-        $user = auth()->user();
-        $notifications = $user->notifications;
+        if (Auth::check()) {
+            $user = auth()->user();
+            $notifications = $user->notifications;
 
-        $unreadNotifications = $user->unreadNotifications;
+            $unreadNotifications = $user->unreadNotifications;
 
-        return view('profile.notifications', [
-            'notifications' => $notifications,
-            'unread' => $unreadNotifications
-        ]);
+            return view('profile.notifications', [
+                'notifications' => $notifications,
+                'unread' => $unreadNotifications
+            ]);
+        } else {
+            return view('login');
+        }
     }
 
     public function read($id, Response $response)
     {
-        // auth()->user()->notifications->where('id', $id)->markAsRead();
-        auth()->user()->unreadNotifications->markAsRead();
-
-        dd($id);
+        $user = User::find(Auth::user()->id);
 
 
-        // $locale = App::currentLocale();
-
-        // if (App::isLocale('en')) {
-        //     dd("Hello world");
-        // }
+        $user->unreadNotifications()->update(['read_at' => now()]);
+        dd($user->notifications);
     }
 
     public function process()
@@ -199,5 +203,31 @@ class EmployeeController extends Controller
         } else {
             dd('Error: ' . $process->getErrorOutput());
         }
+    }
+
+    public function jobs(User $users)
+    {
+        $res = array();
+        $message = "This is a Jobs Notification by Admin at" . now();
+        $users = User::all();
+        for ($i = 0; $i < count(User::all()); $i++) {
+            $user = User::find($users[$i]->id);
+            if ($user) {
+                $user->notify(new User_notification($user, $message));
+                Arr::add($res, 'status', "Notification dispatched! to $user");
+            } else {
+                Arr::add($res, 'status', "$user => User Not Found!");
+                // return response()->json(['status' => 'User Not Found']);
+            }
+        }
+
+        return view('process', compact('res'));
+        // $user =  User::find(100);
+        // dd($user->notifications);
+    }
+
+    public function scheduling()
+    {
+        return view('scheduling');
     }
 }

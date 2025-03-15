@@ -2,6 +2,10 @@
 
 @section('content')
 
-
-Hello world
+@foreach ($res as $result)
+<ul>
+    <li>{{ $result }}</li>
+</ul>
+    
+@endforeach
 @endsection

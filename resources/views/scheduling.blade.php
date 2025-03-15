@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-{{ $notifications }}
 
+<h1>Hello world</h1>
 @endsection

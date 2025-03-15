@@ -71,6 +71,7 @@
                             <th>
                                 <input type="checkbox" id="{{ $employee->employer_id }}" name="checkbox" value="Bike">
                             </th>
+                            <form action=""></form>
                             <td>{{ $employee->first_name }}</td>
                             <td>{{ $employee->last_name }}</td>
                             <td>{{ $employee->email }}</td>

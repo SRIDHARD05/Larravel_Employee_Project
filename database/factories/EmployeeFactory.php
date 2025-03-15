@@ -18,7 +18,7 @@ class EmployeeFactory extends Factory
             'employer_id' => Str::uuid(),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail(),
+            'email' => $this->faker->unique()->userName() . '.' . $this->faker->domainName(),
             'position' => $this->faker->jobTitle(),
             'salary' => $this->faker->randomFloat(2, 30000, 100000),
         ];
